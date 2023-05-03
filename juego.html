@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yo WIN!</title>
+    <!-- Agrega los archivos CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+   
+</head>
+
+<body>
+    <!-- Crea una barra de navegación con Bootstrap -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Yo Win!</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Inicio</a></li>
+                    <li><a href="#">Acerca de</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Registrarse</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Iniciar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <h1>Agregar una palabra de 6 letras</h1>
+                <form id="palabra-form" >
+                    <div class="form-group">
+                        <label for="palabra">Palabra:</label>
+                        <input type="text" class="form-control" id="palabra" name="palabra" pattern="[A-Za-z]{6}"
+                            title="La palabra debe tener 6 letras" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" id="mostrar" class="btn btn-primary">Mostrar</button>
+                    <button type="button" id="mostrar" onclick="randomTable()" class="btn btn-primary">Ram</button>
+                </form>
+                
+            </div>
+
+            <div class="col-md-6">
+                <div id="tabla-container"></div>
+                <table id="sopa-letras" class="table table-bordered"></table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agrega los archivos JS de Bootstrap -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="juego.js"></script>
+
+</body>
+
+</html>
