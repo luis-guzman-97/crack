@@ -55,7 +55,6 @@ $(document).ready(function () {
           ? "horizontal"
           : "vertical";
 
-
       if (direccion === "horizontal") {
         console.log("direccion", direccion);
         for (var i = columna; i < columna + palabra.length; i++) {
@@ -64,55 +63,139 @@ $(document).ready(function () {
       } else {
         console.log("direccion", direccion);
         for (var i = fila; i < fila + palabra.length; i++) {
-          $(filas[i]).find("td")[columna].textContent = "x"+palabra[i - fila]+"x";
+          $(filas[i]).find("td")[columna].textContent =
+            "x" + palabra[i - fila] + "x";
         }
       }
     }
   });
 });
 
+var seleccionadas = [];
+var clickadas = [];
+var tiempox = null;
 
-function randomTable(){
+function randomTable() {
+  seleccionadas = [];
+  clickadas = [];
+  detenerTiempo();
 
-    $("#sopa-letras").empty();
-    for (var i = 0; i < 20; i++) {
-        var row = $("<tr></tr>");
-        for (var j = 0; j < 20; j++) {
-          var button = $("<button  class='btn btn-default btn-sm'></button>").text(getRandomLetter());
-          var cell = $("<td></td>").append(button);
-          row.append(cell);
-        }
-        $("#sopa-letras").append(row);
-      }
-      
-      // Colocar la palabra "YOUWIN" en la sopa de letras
-      var horizontal = Math.random() < 0.5; // Decidir si la palabra va en posición horizontal o vertical
-      var x, y;
-      if (horizontal) {
-        // Colocar la palabra en posición horizontal
-        y = Math.floor(Math.random() * 20); // Seleccionar una fila aleatoria
-        x = Math.floor(Math.random() * 15); // Seleccionar una columna aleatoria para que la palabra no se corte con el lateral derecho
-        for (var i = 0; i < 5; i++) {
-          var button = $("<button class='btn btn-success  btn-sm' ></button>").text("CRACK".charAt(i));
-          var cell = $("#sopa-letras tr:eq(" + y + ") td:eq(" + (x + i) + ")");
-          cell.empty();
-          cell.append(button);
-        }
-      } else {
-        // Colocar la palabra en posición vertical
-        x = Math.floor(Math.random() * 20); // Seleccionar una columna aleatoria
-        y = Math.floor(Math.random() * 15); // Seleccionar una fila aleatoria para que la palabra no se corte con el lateral inferior
-        for (var i = 0; i < 5; i++) {
-          var button = $("<button class='btn btn-success  btn-sm'></button>").text("CRACK".charAt(i));
-          var cell = $("#sopa-letras tr:eq(" + (y + i) + ") td:eq(" + x + ")");
-          cell.empty();
-          cell.append(button);
-        }
-      }
+  $("#sopa-letras").empty();
+  for (var i = 0; i < 20; i++) {
+    var row = $("<tr></tr>");
+    for (var j = 0; j < 20; j++) {
+      var button = $(
+        "<button  class='btn btn-default btn-sm opt'></button>"
+      ).text(getRandomLetter());
+      var cell = $("<td></td>").append(button);
+      row.append(cell);
+    }
+    $("#sopa-letras").append(row);
   }
-  
-  function getRandomLetter() {
-    // Generar una letra aleatoria entre A y Z
-    var charCode = 65 + Math.floor(Math.random() * 26);
-    return String.fromCharCode(charCode);
+
+  // Colocar la palabra "YOUWIN" en la sopa de letras
+  var horizontal = Math.random() < 0.5; // Decidir si la palabra va en posición horizontal o vertical
+  var x, y;
+  if (horizontal) {
+    // Colocar la palabra en posición horizontal
+    y = Math.floor(Math.random() * 20); // Seleccionar una fila aleatoria
+    x = Math.floor(Math.random() * 15); // Seleccionar una columna aleatoria para que la palabra no se corte con el lateral derecho
+    for (var i = 0; i < 5; i++) {
+      var button = $(
+        "<button class='btn btn-default  btn-sm opt' ></button>"
+      ).text("CRACK".charAt(i));
+      var cell = $("#sopa-letras tr:eq(" + y + ") td:eq(" + (x + i) + ")");
+      seleccionadas.push(
+        "#sopa-letras tr:eq(" + y + ") td:eq(" + (x + i) + ")"
+      );
+
+      cell.empty();
+      cell.append(button);
+    }
+    console.log(seleccionadas);
+  } else {
+    // Colocar la palabra en posición vertical
+    x = Math.floor(Math.random() * 20); // Seleccionar una columna aleatoria
+    y = Math.floor(Math.random() * 15); // Seleccionar una fila aleatoria para que la palabra no se corte con el lateral inferior
+    for (var i = 0; i < 5; i++) {
+      var button = $(
+        "<button class='btn btn-default   btn-sm opt'></button>"
+      ).text("CRACK".charAt(i));
+      var cell = $("#sopa-letras tr:eq(" + (y + i) + ") td:eq(" + x + ")");
+      seleccionadas.push(
+        "#sopa-letras tr:eq(" + (y + i) + ") td:eq(" + x + ")"
+      );
+      cell.empty();
+      cell.append(button);
+    }
+    console.log(seleccionadas);
   }
+
+  $(".opt").removeAttr("disabled");
+
+  $(".opt").click(function () {
+    var row = $(this).closest("tr").index();
+    var col = $(this).closest("td").index();
+    var comparar = "#sopa-letras tr:eq(" + row + ") td:eq(" + col + ")";
+
+    if (seleccionadas.includes(comparar)) {
+      console.log("Fila: " + row + ", Columna: " + col);
+      if (!clickadas.includes(comparar)) {
+        clickadas.push(comparar);
+        $(this).removeClass("opt");
+        $(this).removeClass("btn-success");
+        $(this).removeClass("btn-default");
+        $(this).addClass("btn-primary");
+      }
+    } else {
+      $(this).removeClass("btn-success");
+      $(this).removeClass("btn-default");
+      $(this).addClass("btn-danger");
+      $(".opt").prop("disabled", true);
+
+      for (let d of seleccionadas) {
+        $(d + " button").removeClass("btn-success");
+        $(d + " button").addClass("btn-primary");
+        $(d + " button").removeAttr("disabled");
+      }
+
+      detenerTiempo();
+    }
+
+    clickadas.sort();
+    seleccionadas.sort();
+
+    // Verificar si los arrays ordenados son iguales
+    var areEqual = JSON.stringify(clickadas) === JSON.stringify(seleccionadas);
+
+    console.log("clickadas", clickadas);
+
+    if (areEqual) {
+      detenerTiempo();
+      alert("Eres un carak");
+      $(".opt").prop("disabled", true);
+    } else {
+      console.log("Los arrays no tienen los mismos valores");
+    }
+  });
+
+  tiempo();
+}
+
+function tiempo() {
+  var seconds = 0;
+  tiempox = setInterval(function () {
+    seconds++;
+    $("#timer").html(seconds + " segundos");
+  }, 1000);
+}
+
+function detenerTiempo() {
+  clearInterval(tiempox);
+}
+
+function getRandomLetter() {
+  // Generar una letra aleatoria entre A y Z
+  var charCode = 65 + Math.floor(Math.random() * 26);
+  return String.fromCharCode(charCode);
+}
