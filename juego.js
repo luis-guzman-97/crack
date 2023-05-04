@@ -186,8 +186,8 @@ function tiempo() {
   var seconds = 0;
   tiempox = setInterval(function () {
     seconds++;
-    $("#timer").html(seconds + " segundos");
-  }, 1000);
+    $("#timer").html(parseFloat(seconds/10).toFixed(2) + " segundos");
+  }, 100);
 }
 
 function detenerTiempo() {
